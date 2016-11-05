@@ -16,7 +16,7 @@ class CreateUsersTabele extends Migration
             $table->increments('id');
             $table->string('mid');
             $table->string('e_mail');
-            $table->string('accesss_token');
+            $table->string('access_token');
             $table->string('refresh_token');
             $table->boolean('friend_flag');
 

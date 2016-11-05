@@ -12,5 +12,11 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+	info("uhohoho");
+    // return view('welcome');
 });
+Route::get('/user','UsersController@index');
+Route::get('/form','FormsController@index');
+Route::post('/form/store','FormsController@store');
+Route::post('/form/update','FormsController@update');
+Route::post('/form/delete','FormsController@delete');
