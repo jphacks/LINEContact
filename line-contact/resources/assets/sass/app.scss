@@ -1,2 +1,120 @@
-// @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+$primary_text_color: rgba(0,0,0,0.87);
+$secondary_text_color: rgba(0,0,0,0.54);
+$disabled_text_color: rgba(0,0,0,0.38);
 
+body,html{
+	width: 100%;
+	height: 100%;
+	background-color: #fafafa;
+}
+*{
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+.isActive{
+	color: $primary_text_color!important;
+}
+.mdl-navigation__link{
+	font-weight: bold;
+	cursor: pointer;
+}
+.menu-item{
+	cursor: pointer;
+	&:hover{
+		background-color: #D4D4D4;
+	}
+}
+.card-grid{
+	width: 95%;
+	height: 100vh;
+	margin: 0 auto;
+	overflow: scroll;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	.card{
+		position: relative;
+		width: 200px;
+		height: 250px;
+		background-color: #fff;
+		min-height: 0;
+		margin: 25px;
+		&:last-child{
+			button{
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translateX(-50%) translateY(-50%) scale(1.1);
+			}
+		}
+		.menu{
+			display: none;
+			width: 150px;
+			position: absolute;
+			bottom: 10px;
+			right: 10px;
+			z-index: 100;
+			background-color: white;
+			box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+			padding: 5px 0;
+			.menu-item{
+				list-style: none;
+				padding: 10px;
+			}
+		}
+		.delete-button{
+			color: red;
+		}
+		.title{
+			font-size: 2rem;
+			padding: 10px;
+			color: $primary_text_color;
+		}
+		.footer{
+			position: absolute;
+			bottom: 0;	
+			left: 0;
+			.date{
+				font-size: 0.95rem;
+				position: relative;
+				height: 36px;
+				text-indent: 10px;
+				line-height: 36px;
+				min-width: 64px;
+				display: inline-block;
+			}
+			.menu-button{
+				color: rgb(63,81,181);
+				float: right;
+			}
+		}
+	}
+}
+
+.inputTitleBox{
+	display: none;
+	position: fixed;
+	top: 20%;
+	left: 25%;
+	width: 50%;
+	z-index: 1500;
+	.inputArea{
+		display: block;
+		margin: 0 auto;
+	}
+	button{
+		display: block;
+		margin: 0 auto;
+	}
+}
+.overlay{
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1000;
+	background-color: rgba(0,0,0,0.3);
+}
