@@ -30,11 +30,10 @@ class UsersController extends Controller
     	$data = $this->token_check(Input::get('access_token'));
     	if ($data) {
     		return response()->json($data);
-    	}else{
-    		return response()->json([
+    	}
+    	return response()->json([
     			'err'=>'token is not fand'
     			]);
-    	}
     }
 
 }
