@@ -2,7 +2,8 @@ import React from "react";
 import AppStore from "../stores/AppStore.js"
 import AppActions from "../actions/AppActions.js"
 
-import Projects from "./Projects.jsx"
+import Projects from "./top/Projects.jsx"
+import EditView from "./main/EditView.jsx"
 
 var getProjectData = () => {
 	return {
@@ -44,9 +45,14 @@ export default class App extends React.Component{
 			  <main className="mdl-layout__content">
 			  	<div className="page-content">
 			    
-						<Projects
+						{/*<Projects
+							allProjects={this.state.allProjects}
+						/>*/}
+
+						<EditView
 							allProjects={this.state.allProjects}
 						/>
+
 
 			    </div>
 			  </main>

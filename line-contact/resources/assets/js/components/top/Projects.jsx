@@ -1,7 +1,7 @@
 import React from "react"
 import $ from "jquery"
 
-import AppActions from "../actions/AppActions.js"
+import AppActions from "../../actions/AppActions.js"
 
 export default class Projects extends React.Component{
 
