@@ -12,8 +12,7 @@
 */
 
 Route::get('/', function () {
-	info("uhohoho");
-    // return view('welcome');
+    return view('index');
 });
 Route::get('/user','UsersController@index');
 Route::get('/form','FormsController@index');
