@@ -21819,15 +21819,15 @@
 
 	var _AppStore2 = _interopRequireDefault(_AppStore);
 
-	var _AppActions = __webpack_require__(188);
+	var _AppActions = __webpack_require__(189);
 
 	var _AppActions2 = _interopRequireDefault(_AppActions);
 
-	var _Projects = __webpack_require__(191);
+	var _Projects = __webpack_require__(190);
 
 	var _Projects2 = _interopRequireDefault(_Projects);
 
-	var _EditView = __webpack_require__(192);
+	var _EditView = __webpack_require__(191);
 
 	var _EditView2 = _interopRequireDefault(_EditView);
 
@@ -21841,7 +21841,11 @@
 
 	var getProjectData = function getProjectData() {
 		return {
-			allProjects: _AppStore2.default.getAll()
+			allProjects: _AppStore2.default.getAll(),
+			allFormData: _AppStore2.default.getAllFormData(),
+			current_page: _AppStore2.default.getCurrentPage(),
+			current_form_title: _AppStore2.default.getCurrentFormTitle(),
+			current_form_id: _AppStore2.default.getCurrentFormId()
 		};
 	};
 
@@ -21858,8 +21862,16 @@
 				_AppActions2.default.change_menu(id);
 			};
 
+			_this._save = function () {
+				_AppActions2.default.save(_this.state.current_form_id);
+			};
+
+			_this._cancel = function () {
+				_AppActions2.default.cancel();
+			};
+
 			_this._onChange = function () {
-				_this.setState(getProjectData);
+				_this.setState(getProjectData());
 			};
 
 			_this.state = getProjectData();
@@ -21880,6 +21892,28 @@
 			key: "render",
 			value: function render() {
 
+				var dom;
+
+				switch (this.state.current_page) {
+
+					case "index":
+						// window.history.pushState(null,null,"/")
+						dom = _react2.default.createElement(_Projects2.default, { allProjects: this.state.allProjects });
+						break;
+
+					case "edit":
+						// window.history.pushState(null,null,"/edit")
+						dom = _react2.default.createElement(_EditView2.default, { current_form_title: this.state.current_form_title, allFormData: this.state.allFormData });
+						break;
+
+					default:
+					// no
+
+				}
+
+				var _save = this.state.current_page == "index" ? "" : "SAVE";
+				var _cancel = this.state.current_page == "index" ? "" : "CANCEL";
+
 				return _react2.default.createElement(
 					"div",
 					{ className: "mdl-layout mdl-js-layout mdl-layout--fixed-header" },
@@ -21893,6 +21927,21 @@
 								"span",
 								{ className: "mdl-layout-title" },
 								"LINE CONTACT"
+							),
+							_react2.default.createElement("div", { className: "mdl-layout-spacer" }),
+							_react2.default.createElement(
+								"nav",
+								{ className: "mdl-navigation mdl-layout--large-screen-only" },
+								_react2.default.createElement(
+									"span",
+									{ className: "mdl-navigation__link save_button", onClick: this._cancel },
+									_cancel
+								),
+								_react2.default.createElement(
+									"span",
+									{ className: "mdl-navigation__link save_button", onClick: this._save },
+									_save
+								)
 							)
 						)
 					),
@@ -21925,9 +21974,7 @@
 						_react2.default.createElement(
 							"div",
 							{ className: "page-content" },
-							_react2.default.createElement(_EditView2.default, {
-								allProjects: this.state.allProjects
-							})
+							dom
 						)
 					)
 				);
@@ -21968,15 +22015,23 @@
 	var CHANGE_EVENT = 'change';
 
 	var _data = {};
+	var _form_data = [];
 
+	var _current_page = "index";
+	var _current_form_title = "";
+	var _current_id = "";
+
+	// home change menu
 	var change_menu = function change_menu(now) {
 		console.log("now menu is " + now);
 	};
 
+	// project sheet confirmation
 	var sheet_confirmation = function sheet_confirmation(id) {
 		console.log("sheet confirmation id: " + id);
 	};
 
+	// project create
 	var create = function create(title) {
 		var d = new Date(),
 		    date = [d.getFullYear(), d.getMonth(), d.getDate()].join("/");
@@ -21984,21 +22039,65 @@
 		_data[id] = {
 			id: id,
 			title: title,
-			date: date
+			date: date,
+			form_data: []
 		};
 	};
 
-	var edit = function edit(id) {
-		console.log("edit id: " + id);
+	var getTitle = function getTitle(id) {
+		return _data[id].title;
 	};
 
+	// project edit
+	var edit = function edit(id) {
+		_current_id = id;
+		_current_form_title = getTitle(id);
+		_current_page = "edit";
+		_form_data = _data[id].form_data || [];
+	};
+
+	// project destory
 	var destroy = function destroy(id) {
 		if (confirm("削除してもよろしいですか？")) {
 			delete _data[id];
 		}
 	};
 
+	// create form
+	var create_form = function create_form(id) {
+		_form_data.push({
+			type: id,
+			id: "line_connect_" + (+new Date() + Math.floor(Math.random() * 999999)).toString(36)
+		});
+	};
+
+	// form data save
+	var save = function save(id) {
+		_data[id].form_data = _form_data;
+		_form_data = [];
+		_current_page = "index";
+	};
+
+	// form data cancel
+	var cancel = function cancel() {
+		_form_data = [];
+		_current_page = "index";
+	};
+
 	var AppStore = (0, _objectAssign2.default)({}, _events.EventEmitter.prototype, {
+		getCurrentPage: function getCurrentPage() {
+			return _current_page;
+		},
+		getCurrentFormId: function getCurrentFormId() {
+			return _current_id;
+		},
+		getCurrentFormTitle: function getCurrentFormTitle() {
+			return _current_form_title;
+		},
+		getAllFormData: function getAllFormData() {
+			console.log(_form_data);
+			return _form_data;
+		},
 		getAll: function getAll() {
 			return _data;
 		},
@@ -22039,6 +22138,21 @@
 
 			case _AppConstants2.default.DESTROY:
 				destroy(action.id);
+				AppStore.emitChange();
+				break;
+
+			case _AppConstants2.default.CREATE_FORM:
+				if (action.id !== undefined) create_form(action.id);
+				AppStore.emitChange();
+				break;
+
+			case _AppConstants2.default.CANCEL:
+				cancel();
+				AppStore.emitChange();
+				break;
+
+			case _AppConstants2.default.SAVE:
+				save(action.id);
 				AppStore.emitChange();
 				break;
 
@@ -22621,7 +22735,10 @@
 		SHEET_CONFIRMATION: null,
 		CREATE: null,
 		EDIT: null,
-		DESTROY: null
+		DESTROY: null,
+		CREATE_FORM: null,
+		CANCEL: null,
+		SAVE: null
 	});
 
 	exports.default = constant;
@@ -22728,63 +22845,7 @@
 	};
 
 /***/ },
-/* 187 */,
-/* 188 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _AppDispatcher = __webpack_require__(180);
-
-	var _AppDispatcher2 = _interopRequireDefault(_AppDispatcher);
-
-	var _AppConstants = __webpack_require__(184);
-
-	var _AppConstants2 = _interopRequireDefault(_AppConstants);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var AppActions = {
-		change_menu: function change_menu(now) {
-			_AppDispatcher2.default.dispatch({
-				actionType: _AppConstants2.default.CHANGE_MENU,
-				now: now
-			});
-		},
-		sheet_confirmation: function sheet_confirmation(id) {
-			_AppDispatcher2.default.dispatch({
-				actionType: _AppConstants2.default.SHEET_CONFIRMATION,
-				id: id
-			});
-		},
-		create: function create(title) {
-			_AppDispatcher2.default.dispatch({
-				actionType: _AppConstants2.default.CREATE,
-				title: title
-			});
-		},
-		edit: function edit(id) {
-			_AppDispatcher2.default.dispatch({
-				actionType: _AppConstants2.default.EDIT,
-				id: id
-			});
-		},
-		destroy: function destroy(id) {
-			_AppDispatcher2.default.dispatch({
-				actionType: _AppConstants2.default.DESTROY,
-				id: id
-			});
-		}
-	};
-
-	exports.default = AppActions;
-
-/***/ },
-/* 189 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {"use strict";var _typeof=typeof Symbol==="function"&&typeof Symbol.iterator==="symbol"?function(obj){return typeof obj;}:function(obj){return obj&&typeof Symbol==="function"&&obj.constructor===Symbol&&obj!==Symbol.prototype?"symbol":typeof obj;};/*!
@@ -24432,10 +24493,10 @@
 	// (#7102#comment:10, https://github.com/jquery/jquery/pull/557)
 	// and CommonJS for browser emulators (#13566)
 	if(!noGlobal){window.jQuery=window.$=jQuery;}return jQuery;});
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(190)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(188)(module)))
 
 /***/ },
-/* 190 */
+/* 188 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24452,7 +24513,79 @@
 	};
 
 /***/ },
-/* 191 */
+/* 189 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _AppDispatcher = __webpack_require__(180);
+
+	var _AppDispatcher2 = _interopRequireDefault(_AppDispatcher);
+
+	var _AppConstants = __webpack_require__(184);
+
+	var _AppConstants2 = _interopRequireDefault(_AppConstants);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var AppActions = {
+		change_menu: function change_menu(now) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.CHANGE_MENU,
+				now: now
+			});
+		},
+		sheet_confirmation: function sheet_confirmation(id) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.SHEET_CONFIRMATION,
+				id: id
+			});
+		},
+		create: function create(title) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.CREATE,
+				title: title
+			});
+		},
+		edit: function edit(id) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.EDIT,
+				id: id
+			});
+		},
+		destroy: function destroy(id) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.DESTROY,
+				id: id
+			});
+		},
+		create_form: function create_form(id) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.CREATE_FORM,
+				id: id
+			});
+		},
+		cancel: function cancel() {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.CANCEL
+			});
+		},
+		save: function save(id) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.SAVE,
+				id: id
+			});
+		}
+	};
+
+	exports.default = AppActions;
+
+/***/ },
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -24467,11 +24600,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _jquery = __webpack_require__(189);
+	var _jquery = __webpack_require__(187);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	var _AppActions = __webpack_require__(188);
+	var _AppActions = __webpack_require__(189);
 
 	var _AppActions2 = _interopRequireDefault(_AppActions);
 
@@ -24654,6 +24787,234 @@
 	exports.default = Projects;
 
 /***/ },
+/* 191 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _jquery = __webpack_require__(187);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	var _AppActions = __webpack_require__(189);
+
+	var _AppActions2 = _interopRequireDefault(_AppActions);
+
+	var _Text = __webpack_require__(192);
+
+	var _Text2 = _interopRequireDefault(_Text);
+
+	var _Textarea = __webpack_require__(193);
+
+	var _Textarea2 = _interopRequireDefault(_Textarea);
+
+	var _Submit = __webpack_require__(194);
+
+	var _Submit2 = _interopRequireDefault(_Submit);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var doms = [];
+
+	var EditView = function (_React$Component) {
+		_inherits(EditView, _React$Component);
+
+		function EditView(props) {
+			_classCallCheck(this, EditView);
+
+			var _this = _possibleConstructorReturn(this, (EditView.__proto__ || Object.getPrototypeOf(EditView)).call(this, props));
+
+			_this._selectForm = function (e) {
+				var id = e.target.dataset.selectid;
+				_AppActions2.default.create_form(id);
+				_this._hideFormVariation();
+			};
+
+			_this._hideFormVariation = function () {
+				(0, _jquery2.default)(".form-variation").fadeOut('slow');
+			};
+
+			_this._addForm = function () {
+				(0, _jquery2.default)(".form-variation").css("display", "flex");
+			};
+
+			return _this;
+		}
+
+		_createClass(EditView, [{
+			key: "componentWillMount",
+			value: function componentWillMount() {
+				this._generate_form();
+			}
+		}, {
+			key: "componentWillReceiveProps",
+			value: function componentWillReceiveProps() {
+				this._generate_form();
+			}
+		}, {
+			key: "_generate_form",
+			value: function _generate_form() {
+
+				console.log(this.props.allFormData);
+
+				doms = [];
+
+				this.props.allFormData.map(function (item) {
+
+					switch (item.type) {
+
+						case "text":
+							doms.push(_react2.default.createElement(_Text2.default, { key: item.id }));
+							break;
+
+						case "textarea":
+							doms.push(_react2.default.createElement(_Textarea2.default, { key: item.id }));
+							break;
+
+						case "radio":
+							doms.push("3");
+							break;
+
+						case "checkbox":
+							doms.push("4");
+							break;
+
+						case "submit":
+							doms.push(_react2.default.createElement(_Submit2.default, { key: item.id }));
+							break;
+
+						default:
+							throw new Error("switch miss");
+
+					}
+				});
+			}
+		}, {
+			key: "render",
+			value: function render() {
+
+				return _react2.default.createElement(
+					"div",
+					{ className: "mdl-grid", id: "edit-view" },
+					_react2.default.createElement(
+						"div",
+						{ className: "mdl-cell mdl-cell--2-col" },
+						_react2.default.createElement(
+							"h1",
+							{ className: "title" },
+							this.props.current_form_title
+						)
+					),
+					_react2.default.createElement(
+						"div",
+						{ className: "mdl-cell mdl-cell--10-col editViewArea" },
+						_react2.default.createElement(
+							"div",
+							{ className: "formView" },
+							_react2.default.createElement(
+								"div",
+								{ className: "user_add_form_area" },
+								doms
+							),
+							_react2.default.createElement(
+								"div",
+								{ className: "add-form-area" },
+								_react2.default.createElement(
+									"div",
+									{ className: "mdl-card mdl-shadow--2dp add-form-button" },
+									_react2.default.createElement(
+										"button",
+										{ className: "mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored", onClick: this._addForm },
+										_react2.default.createElement(
+											"i",
+											{ className: "material-icons" },
+											"add"
+										)
+									)
+								),
+								_react2.default.createElement(
+									"ul",
+									{ className: "form-variation" },
+									_react2.default.createElement(
+										"li",
+										{ className: "form-item", onClick: this._selectForm, "data-selectid": "text" },
+										_react2.default.createElement(
+											"p",
+											{ "data-selectid": "text" },
+											"\u30C6\u30AD\u30B9\u30C8\uFF08\u4E00\u884C\uFF09"
+										),
+										_react2.default.createElement("img", { src: "/images/inline_text.png" })
+									),
+									_react2.default.createElement(
+										"li",
+										{ className: "form-item", onClick: this._selectForm, "data-selectid": "textarea" },
+										_react2.default.createElement(
+											"p",
+											{ "data-selectid": "textarea" },
+											"\u30C6\u30AD\u30B9\u30C8\uFF08\u8907\u6570\u884C\uFF09"
+										),
+										_react2.default.createElement("img", { src: "/images/text_area.png" })
+									),
+									_react2.default.createElement(
+										"li",
+										{ className: "form-item", onClick: this._selectForm, "data-selectid": "radio" },
+										_react2.default.createElement(
+											"p",
+											{ "data-selectid": "radio" },
+											"\u30E9\u30B8\u30AA\u30DC\u30BF\u30F3"
+										),
+										_react2.default.createElement("img", { src: "/images/radio.png" })
+									),
+									_react2.default.createElement(
+										"li",
+										{ className: "form-item", onClick: this._selectForm, "data-selectid": "checkbox" },
+										_react2.default.createElement(
+											"p",
+											{ "data-selectid": "checkbox" },
+											"\u30C1\u30A7\u30C3\u30AF\u30DC\u30C3\u30AF\u30B9"
+										),
+										_react2.default.createElement("img", { src: "/images/check.png" })
+									),
+									_react2.default.createElement(
+										"li",
+										{ className: "form-item", onClick: this._selectForm, "data-selectid": "submit" },
+										_react2.default.createElement(
+											"p",
+											{ "data-selectid": "submit" },
+											"\u9001\u4FE1\u30DC\u30BF\u30F3"
+										),
+										_react2.default.createElement("img", { src: "/images/submit.png" })
+									)
+								)
+							)
+						)
+					)
+				);
+			}
+		}]);
+
+		return EditView;
+	}(_react2.default.Component);
+
+	exports.default = EditView;
+
+/***/ },
 /* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -24669,13 +25030,59 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _jquery = __webpack_require__(189);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var _jquery2 = _interopRequireDefault(_jquery);
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var _AppActions = __webpack_require__(188);
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	var _AppActions2 = _interopRequireDefault(_AppActions);
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Text = function (_React$Component) {
+		_inherits(Text, _React$Component);
+
+		function Text() {
+			_classCallCheck(this, Text);
+
+			return _possibleConstructorReturn(this, (Text.__proto__ || Object.getPrototypeOf(Text)).apply(this, arguments));
+		}
+
+		_createClass(Text, [{
+			key: "render",
+			value: function render() {
+				return _react2.default.createElement(
+					"div",
+					{ className: "created_form_item" },
+					_react2.default.createElement(
+						"label",
+						{ htmlFor: "line_connect_3" },
+						"hoge"
+					),
+					_react2.default.createElement("input", { type: "text", id: "line_connect_3" })
+				);
+			}
+		}]);
+
+		return Text;
+	}(_react2.default.Component);
+
+	exports.default = Text;
+
+/***/ },
+/* 193 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24685,103 +25092,84 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var EditView = function (_React$Component) {
-		_inherits(EditView, _React$Component);
+	var Textarea = function (_React$Component) {
+		_inherits(Textarea, _React$Component);
 
-		function EditView(props) {
-			_classCallCheck(this, EditView);
+		function Textarea() {
+			_classCallCheck(this, Textarea);
 
-			var _this = _possibleConstructorReturn(this, (EditView.__proto__ || Object.getPrototypeOf(EditView)).call(this, props));
-
-			_this._addForm = function () {
-				(0, _jquery2.default)(".form-variation").css("display", "flex");
-			};
-
-			_this._hoge = function () {
-				(0, _jquery2.default)(".form-variation").fadeOut('slow');
-			};
-
-			return _this;
+			return _possibleConstructorReturn(this, (Textarea.__proto__ || Object.getPrototypeOf(Textarea)).apply(this, arguments));
 		}
 
-		_createClass(EditView, [{
+		_createClass(Textarea, [{
 			key: "render",
 			value: function render() {
 				return _react2.default.createElement(
 					"div",
-					{ className: "mdl-grid", id: "edit-view" },
+					{ className: "created_form_item" },
 					_react2.default.createElement(
-						"div",
-						{ className: "mdl-cell mdl-cell--2-col" },
-						_react2.default.createElement(
-							"h1",
-							{ className: "title" },
-							"Hoge"
-						)
+						"label",
+						{ htmlFor: "line_connect_1" },
+						"hoge"
 					),
-					_react2.default.createElement(
-						"div",
-						{ className: "mdl-cell mdl-cell--10-col editViewArea" },
-						_react2.default.createElement(
-							"div",
-							{ className: "formView" },
-							_react2.default.createElement(
-								"div",
-								{ className: "mdl-card mdl-shadow--2dp add-form-button" },
-								_react2.default.createElement(
-									"button",
-									{ className: "mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored", onClick: this._addForm },
-									_react2.default.createElement(
-										"i",
-										{ className: "material-icons" },
-										"add"
-									)
-								)
-							),
-							_react2.default.createElement(
-								"ul",
-								{ className: "form-variation" },
-								_react2.default.createElement(
-									"li",
-									{ className: "form-item", onClick: this._hoge },
-									_react2.default.createElement(
-										"p",
-										null,
-										"\u30C6\u30AD\u30B9\u30C8\uFF08\u4E00\u884C\uFF09"
-									),
-									_react2.default.createElement("img", { src: "/images/inline_text.png" })
-								),
-								_react2.default.createElement(
-									"li",
-									{ className: "form-item", onClick: this._hoge },
-									_react2.default.createElement(
-										"p",
-										null,
-										"\u30C6\u30AD\u30B9\u30C8\uFF08\u4E00\u884C\uFF09"
-									),
-									_react2.default.createElement("img", { src: "/images/inline_text.png" })
-								),
-								_react2.default.createElement(
-									"li",
-									{ className: "form-item", onClick: this._hoge },
-									_react2.default.createElement(
-										"p",
-										null,
-										"\u30C6\u30AD\u30B9\u30C8\uFF08\u4E00\u884C\uFF09"
-									),
-									_react2.default.createElement("img", { src: "/images/inline_text.png" })
-								)
-							)
-						)
-					)
+					_react2.default.createElement("textarea", { rows: "4", cols: "40", name: "line_connect_1", id: "line_connect_1" })
 				);
 			}
 		}]);
 
-		return EditView;
+		return Textarea;
 	}(_react2.default.Component);
 
-	exports.default = EditView;
+	exports.default = Textarea;
+
+/***/ },
+/* 194 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Submit = function (_React$Component) {
+		_inherits(Submit, _React$Component);
+
+		function Submit() {
+			_classCallCheck(this, Submit);
+
+			return _possibleConstructorReturn(this, (Submit.__proto__ || Object.getPrototypeOf(Submit)).apply(this, arguments));
+		}
+
+		_createClass(Submit, [{
+			key: "render",
+			value: function render() {
+				return _react2.default.createElement(
+					"div",
+					{ className: "created_form_item" },
+					_react2.default.createElement("input", { type: "submit" })
+				);
+			}
+		}]);
+
+		return Submit;
+	}(_react2.default.Component);
+
+	exports.default = Submit;
 
 /***/ }
 /******/ ]);

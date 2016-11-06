@@ -24,7 +24,6 @@ export default class Projects extends React.Component{
 				    </button>
 				  </div>
 				  <ul className={allProjects[data].id + "-menu menu"} data-mdl-for={allProjects[data].id}>
-					  {/*<li className="menu-item" onClick={this._sheet_confirmation}>シートを確認</li>*/}
 					  <li className="menu-item" onClick={this._edit}>編集</li>
 					  <li className="menu-item delete-button" onClick={this._destroy}>削除</li>
 					  <li className="menu-item" onClick={this._closeMenuView}>閉じる</li>
