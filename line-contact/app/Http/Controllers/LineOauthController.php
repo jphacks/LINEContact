@@ -18,6 +18,7 @@ class LineOauthController extends Controller
     public function callback()
     {
         $user = Socialite::driver('line')->user();
-        var_dump($user);
+        //$user = json_decode($user, true);
+        var_dump($user->token);
     }
 }
