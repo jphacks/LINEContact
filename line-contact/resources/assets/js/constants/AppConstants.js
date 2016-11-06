@@ -5,7 +5,11 @@ var constant= keyMirror({
 	SHEET_CONFIRMATION: null,
 	CREATE: null,
 	EDIT: null,
-	DESTROY: null
+	DESTROY: null,
+	CREATE_FORM: null,
+	CREATE_FORM_SUBMIT: null,
+	CANCEL: null,
+	SAVE: null
 })
 
 export default constant

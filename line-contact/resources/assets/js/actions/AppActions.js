@@ -36,7 +36,35 @@ var AppActions = {
 			actionType: AppConstants.DESTROY,
 			id: id
 		})
-	}
+	},
+
+	create_form(id,title){
+		AppDispatcher.dispatch({
+			actionType: AppConstants.CREATE_FORM,
+			id: id,
+			title: title
+		})
+	},
+
+	create_form_submit(id){
+		AppDispatcher.dispatch({
+			actionType: AppConstants.CREATE_FORM_SUBMIT,
+			id: id
+		})
+	},
+
+	cancel(){
+		AppDispatcher.dispatch({
+			actionType: AppConstants.CANCEL
+		})
+	},
+
+	save(id){
+		AppDispatcher.dispatch({
+			actionType: AppConstants.SAVE,
+			id: id
+		})
+	},
 
 }
 

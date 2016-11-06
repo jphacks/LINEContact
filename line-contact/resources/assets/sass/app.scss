@@ -118,3 +118,95 @@ body,html{
 	z-index: 1000;
 	background-color: rgba(0,0,0,0.3);
 }
+#edit-view{
+	.title{
+		text-align: center;
+		line-height: 2;
+		font-size: 2rem;
+		border-bottom: 1px solid #2B2B2B;
+	}
+	.editViewArea{
+		position: relative;
+		.formView{
+			width: 60%;
+			margin: 0 auto;
+			position: relative;
+			.add-form-area{
+				position: relative;
+				.add-form-button{
+					position: relative;
+					min-height: 0;
+					padding: 5px 0;
+					button{
+						transform: scale(0.8);
+					}
+				}
+				.form-variation{
+					width: 500px;
+					position: absolute;
+					top: 50%;
+					left: 35%;
+					background-color: #fff;
+					display: none;
+					padding: 5px 10px;
+					z-index: 2000;
+					overflow-x: scroll; 
+					box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+					.form-item{
+						cursor: pointer;
+						display: block;
+						max-width: 150px;
+						min-width: 150px;
+						list-style: none;
+						border: 1px solid #CBCBCB;
+						padding: 10px;
+						margin: 10px;
+						p{
+							font-size: 0.9rem;
+							z-index: -1;
+						}
+						img{
+							display: block;
+							width: 100%;
+						}
+						&:hover{
+							background-color: #F3F3F3;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.created_form_item{
+	label{
+		display: block;
+		font-size: 1.4rem;
+		margin-bottom: 10px;
+	}
+	input,
+	textarea{
+		display: block;
+		width: 200px;
+		padding: 5px;
+		outline: none;
+		font-size: 0.9rem;
+		margin-bottom: 20px;
+		border: 1px solid #626262;
+	}
+	textarea{
+		width: 200px;
+	}
+	input[type="submit"]{
+		display: block;
+		padding: 10px;
+		outline: none;
+		width: 200px;
+		font-size: 1rem;
+		border: 0;
+		background-color: #fff;
+		border: 1px solid #626262;
+		cursor: pointer;
+	}
+}
