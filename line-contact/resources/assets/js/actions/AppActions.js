@@ -38,9 +38,17 @@ var AppActions = {
 		})
 	},
 
-	create_form(id){
+	create_form(id,title){
 		AppDispatcher.dispatch({
 			actionType: AppConstants.CREATE_FORM,
+			id: id,
+			title: title
+		})
+	},
+
+	create_form_submit(id){
+		AppDispatcher.dispatch({
+			actionType: AppConstants.CREATE_FORM_SUBMIT,
 			id: id
 		})
 	},

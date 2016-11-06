@@ -55,7 +55,16 @@ var destroy = (id) => {
 }
 
 // create form
-var create_form = (id) => {
+var create_form = (id,title) => {
+	_form_data.push({
+		type: id,
+		title: title,
+		id: "line_connect_" + (+new Date() + Math.floor(Math.random() * 999999)).toString(36)
+	})
+}
+
+// submit button create
+var create_form_submit = (id) => {
 	_form_data.push({
 		type: id,
 		id: "line_connect_" + (+new Date() + Math.floor(Math.random() * 999999)).toString(36)
@@ -142,7 +151,12 @@ AppDispatcher.register((action)=>{
 			break;
 
 		case AppConstants.CREATE_FORM:
-			if(action.id !== undefined) create_form(action.id)
+			if(action.id !== undefined) create_form(action.id,action.title)
+			AppStore.emitChange()
+			break;
+
+		case AppConstants.CREATE_FORM_SUBMIT:
+			if(action.id !== undefined) create_form_submit(action.id)
 			AppStore.emitChange()
 			break;
 

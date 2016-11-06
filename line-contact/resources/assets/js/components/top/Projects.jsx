@@ -58,7 +58,7 @@ export default class Projects extends React.Component{
 				  	決定
 				  </button>
 				</div>
-				<div className="overlay" ref="overlay"></div>
+				<div className="overlay" ref="overlay" onClick={this._closeBox}></div>
 
 			</div>
 		)
@@ -68,6 +68,11 @@ export default class Projects extends React.Component{
 		var id = e.target.parentNode.id
 		$(".menu").hide()
 		$("."+id+"-menu").fadeIn()
+	}
+
+	_closeBox = () => {
+		$(".inputTitleBox").fadeOut();
+		$(".overlay").fadeOut();
 	}
 
 	_showInputTitleBox = () => {
@@ -86,8 +91,7 @@ export default class Projects extends React.Component{
 			return
 		}
 		$("#inputTitle").val("")
-		$(".inputTitleBox").fadeOut();
-		$(".overlay").fadeOut();
+		this._closeBox()
 		AppActions.create(title)
 	}
 

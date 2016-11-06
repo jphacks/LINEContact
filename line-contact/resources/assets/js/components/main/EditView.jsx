@@ -8,6 +8,8 @@ import Textarea from "./elements/Textarea.jsx"
 import Submit from "./elements/Submit.jsx"
 
 var doms = []
+var save_id = ""
+var component_title = ""
 
 export default class EditView extends React.Component{
 
@@ -25,8 +27,6 @@ export default class EditView extends React.Component{
 
 	_generate_form(){
 
-		console.log(this.props.allFormData)
-
 		doms = []
 
 		this.props.allFormData.map((item)=>{
@@ -34,11 +34,11 @@ export default class EditView extends React.Component{
 			switch(item.type){
 
 				case "text":
-					doms.push(<Text key={item.id}/>)
+					doms.push(<Text title={item.title} key={item.id}/>)
 					break;
 
 				case "textarea":
-					doms.push(<Textarea key={item.id}/>)
+					doms.push(<Textarea title={item.title} key={item.id}/>)
 					break;
 
 				case "radio":
@@ -114,14 +114,50 @@ export default class EditView extends React.Component{
 			  	</div>
 
 			  </div>
+
+			  <div className="mdl-card mdl-shadow--2dp inputTitleBox" ref="inputTitleBox">
+				  <div className="mdl-card__title">
+				    <h2 className="mdl-card__title-text">タイトル</h2>
+				  </div>
+				  <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label inputArea">
+				    <input className="mdl-textfield__input" type="text" id="inputTitle"/>
+				  </div>
+				  <button className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onClick={this._save_form}>
+				  	決定
+				  </button>
+				</div>
+				<div className="overlay" ref="overlay"></div>
+
 			</div>
 		)
 	}
 
 	_selectForm = (e) => {
 		var id = e.target.dataset.selectid;
-		AppActions.create_form(id)
+		save_id = id
+		if(id == "submit"){
+			this._save_form_submit()
+		}else{
+			$(".inputTitleBox").fadeIn();
+			$(".overlay").fadeIn();
+		}
 		this._hideFormVariation()
+	}
+
+	_save_form = () => {
+		component_title = $("#inputTitle").val();
+		if(component_title == ""){
+			alert("タイトルが入力されていません！")
+			return
+		}
+		$("#inputTitle").val("")
+		$(".inputTitleBox").fadeOut();
+		$(".overlay").fadeOut();
+		AppActions.create_form(save_id,component_title)
+	}
+
+	_save_form_submit = () => {
+		AppActions.create_form_submit(save_id)
 	}
 
 	_hideFormVariation = () => {

@@ -21819,11 +21819,11 @@
 
 	var _AppStore2 = _interopRequireDefault(_AppStore);
 
-	var _AppActions = __webpack_require__(189);
+	var _AppActions = __webpack_require__(187);
 
 	var _AppActions2 = _interopRequireDefault(_AppActions);
 
-	var _Projects = __webpack_require__(190);
+	var _Projects = __webpack_require__(188);
 
 	var _Projects2 = _interopRequireDefault(_Projects);
 
@@ -22064,7 +22064,16 @@
 	};
 
 	// create form
-	var create_form = function create_form(id) {
+	var create_form = function create_form(id, title) {
+		_form_data.push({
+			type: id,
+			title: title,
+			id: "line_connect_" + (+new Date() + Math.floor(Math.random() * 999999)).toString(36)
+		});
+	};
+
+	// submit button create
+	var create_form_submit = function create_form_submit(id) {
 		_form_data.push({
 			type: id,
 			id: "line_connect_" + (+new Date() + Math.floor(Math.random() * 999999)).toString(36)
@@ -22142,7 +22151,12 @@
 				break;
 
 			case _AppConstants2.default.CREATE_FORM:
-				if (action.id !== undefined) create_form(action.id);
+				if (action.id !== undefined) create_form(action.id, action.title);
+				AppStore.emitChange();
+				break;
+
+			case _AppConstants2.default.CREATE_FORM_SUBMIT:
+				if (action.id !== undefined) create_form_submit(action.id);
 				AppStore.emitChange();
 				break;
 
@@ -22737,6 +22751,7 @@
 		EDIT: null,
 		DESTROY: null,
 		CREATE_FORM: null,
+		CREATE_FORM_SUBMIT: null,
 		CANCEL: null,
 		SAVE: null
 	});
@@ -22846,6 +22861,291 @@
 
 /***/ },
 /* 187 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _AppDispatcher = __webpack_require__(180);
+
+	var _AppDispatcher2 = _interopRequireDefault(_AppDispatcher);
+
+	var _AppConstants = __webpack_require__(184);
+
+	var _AppConstants2 = _interopRequireDefault(_AppConstants);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var AppActions = {
+		change_menu: function change_menu(now) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.CHANGE_MENU,
+				now: now
+			});
+		},
+		sheet_confirmation: function sheet_confirmation(id) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.SHEET_CONFIRMATION,
+				id: id
+			});
+		},
+		create: function create(title) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.CREATE,
+				title: title
+			});
+		},
+		edit: function edit(id) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.EDIT,
+				id: id
+			});
+		},
+		destroy: function destroy(id) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.DESTROY,
+				id: id
+			});
+		},
+		create_form: function create_form(id, title) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.CREATE_FORM,
+				id: id,
+				title: title
+			});
+		},
+		create_form_submit: function create_form_submit(id) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.CREATE_FORM_SUBMIT,
+				id: id
+			});
+		},
+		cancel: function cancel() {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.CANCEL
+			});
+		},
+		save: function save(id) {
+			_AppDispatcher2.default.dispatch({
+				actionType: _AppConstants2.default.SAVE,
+				id: id
+			});
+		}
+	};
+
+	exports.default = AppActions;
+
+/***/ },
+/* 188 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _jquery = __webpack_require__(189);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
+	var _AppActions = __webpack_require__(187);
+
+	var _AppActions2 = _interopRequireDefault(_AppActions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Projects = function (_React$Component) {
+		_inherits(Projects, _React$Component);
+
+		function Projects(props) {
+			_classCallCheck(this, Projects);
+
+			var _this = _possibleConstructorReturn(this, (Projects.__proto__ || Object.getPrototypeOf(Projects)).call(this, props));
+
+			_this._showMenu = function (e) {
+				var id = e.target.parentNode.id;
+				(0, _jquery2.default)(".menu").hide();
+				(0, _jquery2.default)("." + id + "-menu").fadeIn();
+			};
+
+			_this._closeBox = function () {
+				(0, _jquery2.default)(".inputTitleBox").fadeOut();
+				(0, _jquery2.default)(".overlay").fadeOut();
+			};
+
+			_this._showInputTitleBox = function () {
+				(0, _jquery2.default)(".inputTitleBox").fadeIn();
+				(0, _jquery2.default)(".overlay").fadeIn();
+			};
+
+			_this._closeMenuView = function () {
+				(0, _jquery2.default)(".menu").fadeOut();
+			};
+
+			_this._create = function () {
+				var title = (0, _jquery2.default)("#inputTitle").val();
+				if (title == "") {
+					alert("タイトルが入力されていません！");
+					return;
+				}
+				(0, _jquery2.default)("#inputTitle").val("");
+				_this._closeBox();
+				_AppActions2.default.create(title);
+			};
+
+			_this._sheet_confirmation = function (e) {
+				var id = e.target.parentNode.dataset.mdlFor;
+				_AppActions2.default.sheet_confirmation(id);
+				_this._closeMenuView();
+			};
+
+			_this._edit = function (e) {
+				var id = e.target.parentNode.dataset.mdlFor;
+				_AppActions2.default.edit(id);
+				_this._closeMenuView();
+			};
+
+			_this._destroy = function (e) {
+				var id = e.target.parentNode.dataset.mdlFor;
+				_AppActions2.default.destroy(id);
+				_this._closeMenuView();
+			};
+
+			return _this;
+		}
+
+		_createClass(Projects, [{
+			key: "render",
+			value: function render() {
+
+				var cards = [];
+				var allProjects = this.props.allProjects;
+				for (var data in allProjects) {
+					cards.push(_react2.default.createElement(
+						"li",
+						{ className: "mdl-card mdl-shadow--2dp card", key: allProjects[data].id },
+						_react2.default.createElement(
+							"h3",
+							{ className: "title" },
+							allProjects[data].title
+						),
+						_react2.default.createElement(
+							"div",
+							{ className: "mdl-card__actions mdl-card--border footer" },
+							_react2.default.createElement(
+								"span",
+								{ className: "date" },
+								allProjects[data].date
+							),
+							_react2.default.createElement(
+								"button",
+								{ id: allProjects[data].id, className: "mdl-button mdl-js-button mdl-button--icon menu-button", onClick: this._showMenu },
+								_react2.default.createElement(
+									"i",
+									{ className: "material-icons" },
+									"more_horiz"
+								)
+							)
+						),
+						_react2.default.createElement(
+							"ul",
+							{ className: allProjects[data].id + "-menu menu", "data-mdl-for": allProjects[data].id },
+							_react2.default.createElement(
+								"li",
+								{ className: "menu-item", onClick: this._edit },
+								"\u7DE8\u96C6"
+							),
+							_react2.default.createElement(
+								"li",
+								{ className: "menu-item delete-button", onClick: this._destroy },
+								"\u524A\u9664"
+							),
+							_react2.default.createElement(
+								"li",
+								{ className: "menu-item", onClick: this._closeMenuView },
+								"\u9589\u3058\u308B"
+							)
+						)
+					));
+				}
+
+				return _react2.default.createElement(
+					"div",
+					null,
+					_react2.default.createElement(
+						"ul",
+						{ className: "card-grid" },
+						cards,
+						_react2.default.createElement(
+							"li",
+							{ className: "mdl-card mdl-shadow--2dp card" },
+							_react2.default.createElement(
+								"button",
+								{ className: "mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored", onClick: this._showInputTitleBox },
+								_react2.default.createElement(
+									"i",
+									{ className: "material-icons" },
+									"add"
+								)
+							)
+						)
+					),
+					_react2.default.createElement(
+						"div",
+						{ className: "mdl-card mdl-shadow--2dp inputTitleBox", ref: "inputTitleBox" },
+						_react2.default.createElement(
+							"div",
+							{ className: "mdl-card__title" },
+							_react2.default.createElement(
+								"h2",
+								{ className: "mdl-card__title-text" },
+								"\u30BF\u30A4\u30C8\u30EB"
+							)
+						),
+						_react2.default.createElement(
+							"div",
+							{ className: "mdl-textfield mdl-js-textfield mdl-textfield--floating-label inputArea" },
+							_react2.default.createElement("input", { className: "mdl-textfield__input", type: "text", id: "inputTitle" }),
+							_react2.default.createElement(
+								"label",
+								{ className: "mdl-textfield__label", htmlFor: "inputTitle" },
+								"Title..."
+							)
+						),
+						_react2.default.createElement(
+							"button",
+							{ className: "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent", onClick: this._create },
+							"\u6C7A\u5B9A"
+						)
+					),
+					_react2.default.createElement("div", { className: "overlay", ref: "overlay", onClick: this._closeBox })
+				);
+			}
+		}]);
+
+		return Projects;
+	}(_react2.default.Component);
+
+	exports.default = Projects;
+
+/***/ },
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module) {"use strict";var _typeof=typeof Symbol==="function"&&typeof Symbol.iterator==="symbol"?function(obj){return typeof obj;}:function(obj){return obj&&typeof Symbol==="function"&&obj.constructor===Symbol&&obj!==Symbol.prototype?"symbol":typeof obj;};/*!
@@ -24493,10 +24793,10 @@
 	// (#7102#comment:10, https://github.com/jquery/jquery/pull/557)
 	// and CommonJS for browser emulators (#13566)
 	if(!noGlobal){window.jQuery=window.$=jQuery;}return jQuery;});
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(188)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(190)(module)))
 
 /***/ },
-/* 188 */
+/* 190 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -24511,280 +24811,6 @@
 		}
 		return module;
 	};
-
-/***/ },
-/* 189 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _AppDispatcher = __webpack_require__(180);
-
-	var _AppDispatcher2 = _interopRequireDefault(_AppDispatcher);
-
-	var _AppConstants = __webpack_require__(184);
-
-	var _AppConstants2 = _interopRequireDefault(_AppConstants);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var AppActions = {
-		change_menu: function change_menu(now) {
-			_AppDispatcher2.default.dispatch({
-				actionType: _AppConstants2.default.CHANGE_MENU,
-				now: now
-			});
-		},
-		sheet_confirmation: function sheet_confirmation(id) {
-			_AppDispatcher2.default.dispatch({
-				actionType: _AppConstants2.default.SHEET_CONFIRMATION,
-				id: id
-			});
-		},
-		create: function create(title) {
-			_AppDispatcher2.default.dispatch({
-				actionType: _AppConstants2.default.CREATE,
-				title: title
-			});
-		},
-		edit: function edit(id) {
-			_AppDispatcher2.default.dispatch({
-				actionType: _AppConstants2.default.EDIT,
-				id: id
-			});
-		},
-		destroy: function destroy(id) {
-			_AppDispatcher2.default.dispatch({
-				actionType: _AppConstants2.default.DESTROY,
-				id: id
-			});
-		},
-		create_form: function create_form(id) {
-			_AppDispatcher2.default.dispatch({
-				actionType: _AppConstants2.default.CREATE_FORM,
-				id: id
-			});
-		},
-		cancel: function cancel() {
-			_AppDispatcher2.default.dispatch({
-				actionType: _AppConstants2.default.CANCEL
-			});
-		},
-		save: function save(id) {
-			_AppDispatcher2.default.dispatch({
-				actionType: _AppConstants2.default.SAVE,
-				id: id
-			});
-		}
-	};
-
-	exports.default = AppActions;
-
-/***/ },
-/* 190 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _jquery = __webpack_require__(187);
-
-	var _jquery2 = _interopRequireDefault(_jquery);
-
-	var _AppActions = __webpack_require__(189);
-
-	var _AppActions2 = _interopRequireDefault(_AppActions);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Projects = function (_React$Component) {
-		_inherits(Projects, _React$Component);
-
-		function Projects(props) {
-			_classCallCheck(this, Projects);
-
-			var _this = _possibleConstructorReturn(this, (Projects.__proto__ || Object.getPrototypeOf(Projects)).call(this, props));
-
-			_this._showMenu = function (e) {
-				var id = e.target.parentNode.id;
-				(0, _jquery2.default)(".menu").hide();
-				(0, _jquery2.default)("." + id + "-menu").fadeIn();
-			};
-
-			_this._showInputTitleBox = function () {
-				(0, _jquery2.default)(".inputTitleBox").fadeIn();
-				(0, _jquery2.default)(".overlay").fadeIn();
-			};
-
-			_this._closeMenuView = function () {
-				(0, _jquery2.default)(".menu").fadeOut();
-			};
-
-			_this._create = function () {
-				var title = (0, _jquery2.default)("#inputTitle").val();
-				if (title == "") {
-					alert("タイトルが入力されていません！");
-					return;
-				}
-				(0, _jquery2.default)("#inputTitle").val("");
-				(0, _jquery2.default)(".inputTitleBox").fadeOut();
-				(0, _jquery2.default)(".overlay").fadeOut();
-				_AppActions2.default.create(title);
-			};
-
-			_this._sheet_confirmation = function (e) {
-				var id = e.target.parentNode.dataset.mdlFor;
-				_AppActions2.default.sheet_confirmation(id);
-				_this._closeMenuView();
-			};
-
-			_this._edit = function (e) {
-				var id = e.target.parentNode.dataset.mdlFor;
-				_AppActions2.default.edit(id);
-				_this._closeMenuView();
-			};
-
-			_this._destroy = function (e) {
-				var id = e.target.parentNode.dataset.mdlFor;
-				_AppActions2.default.destroy(id);
-				_this._closeMenuView();
-			};
-
-			return _this;
-		}
-
-		_createClass(Projects, [{
-			key: "render",
-			value: function render() {
-
-				var cards = [];
-				var allProjects = this.props.allProjects;
-				for (var data in allProjects) {
-					cards.push(_react2.default.createElement(
-						"li",
-						{ className: "mdl-card mdl-shadow--2dp card", key: allProjects[data].id },
-						_react2.default.createElement(
-							"h3",
-							{ className: "title" },
-							allProjects[data].title
-						),
-						_react2.default.createElement(
-							"div",
-							{ className: "mdl-card__actions mdl-card--border footer" },
-							_react2.default.createElement(
-								"span",
-								{ className: "date" },
-								allProjects[data].date
-							),
-							_react2.default.createElement(
-								"button",
-								{ id: allProjects[data].id, className: "mdl-button mdl-js-button mdl-button--icon menu-button", onClick: this._showMenu },
-								_react2.default.createElement(
-									"i",
-									{ className: "material-icons" },
-									"more_horiz"
-								)
-							)
-						),
-						_react2.default.createElement(
-							"ul",
-							{ className: allProjects[data].id + "-menu menu", "data-mdl-for": allProjects[data].id },
-							_react2.default.createElement(
-								"li",
-								{ className: "menu-item", onClick: this._edit },
-								"\u7DE8\u96C6"
-							),
-							_react2.default.createElement(
-								"li",
-								{ className: "menu-item delete-button", onClick: this._destroy },
-								"\u524A\u9664"
-							),
-							_react2.default.createElement(
-								"li",
-								{ className: "menu-item", onClick: this._closeMenuView },
-								"\u9589\u3058\u308B"
-							)
-						)
-					));
-				}
-
-				return _react2.default.createElement(
-					"div",
-					null,
-					_react2.default.createElement(
-						"ul",
-						{ className: "card-grid" },
-						cards,
-						_react2.default.createElement(
-							"li",
-							{ className: "mdl-card mdl-shadow--2dp card" },
-							_react2.default.createElement(
-								"button",
-								{ className: "mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored", onClick: this._showInputTitleBox },
-								_react2.default.createElement(
-									"i",
-									{ className: "material-icons" },
-									"add"
-								)
-							)
-						)
-					),
-					_react2.default.createElement(
-						"div",
-						{ className: "mdl-card mdl-shadow--2dp inputTitleBox", ref: "inputTitleBox" },
-						_react2.default.createElement(
-							"div",
-							{ className: "mdl-card__title" },
-							_react2.default.createElement(
-								"h2",
-								{ className: "mdl-card__title-text" },
-								"\u30BF\u30A4\u30C8\u30EB"
-							)
-						),
-						_react2.default.createElement(
-							"div",
-							{ className: "mdl-textfield mdl-js-textfield mdl-textfield--floating-label inputArea" },
-							_react2.default.createElement("input", { className: "mdl-textfield__input", type: "text", id: "inputTitle" }),
-							_react2.default.createElement(
-								"label",
-								{ className: "mdl-textfield__label", htmlFor: "inputTitle" },
-								"Title..."
-							)
-						),
-						_react2.default.createElement(
-							"button",
-							{ className: "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent", onClick: this._create },
-							"\u6C7A\u5B9A"
-						)
-					),
-					_react2.default.createElement("div", { className: "overlay", ref: "overlay" })
-				);
-			}
-		}]);
-
-		return Projects;
-	}(_react2.default.Component);
-
-	exports.default = Projects;
 
 /***/ },
 /* 191 */
@@ -24802,11 +24828,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _jquery = __webpack_require__(187);
+	var _jquery = __webpack_require__(189);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	var _AppActions = __webpack_require__(189);
+	var _AppActions = __webpack_require__(187);
 
 	var _AppActions2 = _interopRequireDefault(_AppActions);
 
@@ -24831,6 +24857,8 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var doms = [];
+	var save_id = "";
+	var component_title = "";
 
 	var EditView = function (_React$Component) {
 		_inherits(EditView, _React$Component);
@@ -24842,8 +24870,30 @@
 
 			_this._selectForm = function (e) {
 				var id = e.target.dataset.selectid;
-				_AppActions2.default.create_form(id);
+				save_id = id;
+				if (id == "submit") {
+					_this._save_form_submit();
+				} else {
+					(0, _jquery2.default)(".inputTitleBox").fadeIn();
+					(0, _jquery2.default)(".overlay").fadeIn();
+				}
 				_this._hideFormVariation();
+			};
+
+			_this._save_form = function () {
+				component_title = (0, _jquery2.default)("#inputTitle").val();
+				if (component_title == "") {
+					alert("タイトルが入力されていません！");
+					return;
+				}
+				(0, _jquery2.default)("#inputTitle").val("");
+				(0, _jquery2.default)(".inputTitleBox").fadeOut();
+				(0, _jquery2.default)(".overlay").fadeOut();
+				_AppActions2.default.create_form(save_id, component_title);
+			};
+
+			_this._save_form_submit = function () {
+				_AppActions2.default.create_form_submit(save_id);
 			};
 
 			_this._hideFormVariation = function () {
@@ -24871,8 +24921,6 @@
 			key: "_generate_form",
 			value: function _generate_form() {
 
-				console.log(this.props.allFormData);
-
 				doms = [];
 
 				this.props.allFormData.map(function (item) {
@@ -24880,11 +24928,11 @@
 					switch (item.type) {
 
 						case "text":
-							doms.push(_react2.default.createElement(_Text2.default, { key: item.id }));
+							doms.push(_react2.default.createElement(_Text2.default, { title: item.title, key: item.id }));
 							break;
 
 						case "textarea":
-							doms.push(_react2.default.createElement(_Textarea2.default, { key: item.id }));
+							doms.push(_react2.default.createElement(_Textarea2.default, { title: item.title, key: item.id }));
 							break;
 
 						case "radio":
@@ -25004,7 +25052,31 @@
 								)
 							)
 						)
-					)
+					),
+					_react2.default.createElement(
+						"div",
+						{ className: "mdl-card mdl-shadow--2dp inputTitleBox", ref: "inputTitleBox" },
+						_react2.default.createElement(
+							"div",
+							{ className: "mdl-card__title" },
+							_react2.default.createElement(
+								"h2",
+								{ className: "mdl-card__title-text" },
+								"\u30BF\u30A4\u30C8\u30EB"
+							)
+						),
+						_react2.default.createElement(
+							"div",
+							{ className: "mdl-textfield mdl-js-textfield mdl-textfield--floating-label inputArea" },
+							_react2.default.createElement("input", { className: "mdl-textfield__input", type: "text", id: "inputTitle" })
+						),
+						_react2.default.createElement(
+							"button",
+							{ className: "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent", onClick: this._save_form },
+							"\u6C7A\u5B9A"
+						)
+					),
+					_react2.default.createElement("div", { className: "overlay", ref: "overlay" })
 				);
 			}
 		}]);
@@ -25041,10 +25113,10 @@
 	var Text = function (_React$Component) {
 		_inherits(Text, _React$Component);
 
-		function Text() {
+		function Text(props) {
 			_classCallCheck(this, Text);
 
-			return _possibleConstructorReturn(this, (Text.__proto__ || Object.getPrototypeOf(Text)).apply(this, arguments));
+			return _possibleConstructorReturn(this, (Text.__proto__ || Object.getPrototypeOf(Text)).call(this, props));
 		}
 
 		_createClass(Text, [{
@@ -25056,7 +25128,7 @@
 					_react2.default.createElement(
 						"label",
 						{ htmlFor: "line_connect_3" },
-						"hoge"
+						this.props.title
 					),
 					_react2.default.createElement("input", { type: "text", id: "line_connect_3" })
 				);
@@ -25110,7 +25182,7 @@
 					_react2.default.createElement(
 						"label",
 						{ htmlFor: "line_connect_1" },
-						"hoge"
+						this.props.title
 					),
 					_react2.default.createElement("textarea", { rows: "4", cols: "40", name: "line_connect_1", id: "line_connect_1" })
 				);

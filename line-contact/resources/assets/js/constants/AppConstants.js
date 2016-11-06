@@ -7,6 +7,7 @@ var constant= keyMirror({
 	EDIT: null,
 	DESTROY: null,
 	CREATE_FORM: null,
+	CREATE_FORM_SUBMIT: null,
 	CANCEL: null,
 	SAVE: null
 })
