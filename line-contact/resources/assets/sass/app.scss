@@ -1,0 +1,212 @@
+$primary_text_color: rgba(0,0,0,0.87);
+$secondary_text_color: rgba(0,0,0,0.54);
+$disabled_text_color: rgba(0,0,0,0.38);
+
+body,html{
+	width: 100%;
+	height: 100%;
+	background-color: #fafafa;
+}
+*{
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+.isActive{
+	color: $primary_text_color!important;
+}
+.mdl-navigation__link{
+	font-weight: bold;
+	cursor: pointer;
+}
+.menu-item{
+	cursor: pointer;
+	&:hover{
+		background-color: #D4D4D4;
+	}
+}
+.card-grid{
+	width: 95%;
+	height: 100vh;
+	margin: 0 auto;
+	overflow: scroll;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	.card{
+		position: relative;
+		width: 200px;
+		height: 250px;
+		background-color: #fff;
+		min-height: 0;
+		margin: 25px;
+		&:last-child{
+			button{
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translateX(-50%) translateY(-50%) scale(1.1);
+			}
+		}
+		.menu{
+			display: none;
+			width: 150px;
+			position: absolute;
+			bottom: 10px;
+			right: 10px;
+			z-index: 100;
+			background-color: white;
+			box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+			padding: 5px 0;
+			.menu-item{
+				list-style: none;
+				padding: 10px;
+			}
+		}
+		.delete-button{
+			color: red;
+		}
+		.title{
+			font-size: 2rem;
+			padding: 10px;
+			color: $primary_text_color;
+		}
+		.footer{
+			position: absolute;
+			bottom: 0;	
+			left: 0;
+			.date{
+				font-size: 0.95rem;
+				position: relative;
+				height: 36px;
+				text-indent: 10px;
+				line-height: 36px;
+				min-width: 64px;
+				display: inline-block;
+			}
+			.menu-button{
+				color: rgb(63,81,181);
+				float: right;
+			}
+		}
+	}
+}
+
+.inputTitleBox{
+	display: none;
+	position: fixed;
+	top: 20%;
+	left: 25%;
+	width: 50%;
+	z-index: 1500;
+	.inputArea{
+		display: block;
+		margin: 0 auto;
+	}
+	button{
+		display: block;
+		margin: 0 auto;
+	}
+}
+.overlay{
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1000;
+	background-color: rgba(0,0,0,0.3);
+}
+#edit-view{
+	.title{
+		text-align: center;
+		line-height: 2;
+		font-size: 2rem;
+		border-bottom: 1px solid #2B2B2B;
+	}
+	.editViewArea{
+		position: relative;
+		.formView{
+			width: 60%;
+			margin: 0 auto;
+			position: relative;
+			.add-form-area{
+				position: relative;
+				.add-form-button{
+					position: relative;
+					min-height: 0;
+					padding: 5px 0;
+					button{
+						transform: scale(0.8);
+					}
+				}
+				.form-variation{
+					width: 500px;
+					position: absolute;
+					top: 50%;
+					left: 35%;
+					background-color: #fff;
+					display: none;
+					padding: 5px 10px;
+					z-index: 2000;
+					overflow-x: scroll; 
+					box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+					.form-item{
+						cursor: pointer;
+						display: block;
+						max-width: 150px;
+						min-width: 150px;
+						list-style: none;
+						border: 1px solid #CBCBCB;
+						padding: 10px;
+						margin: 10px;
+						p{
+							font-size: 0.9rem;
+							z-index: -1;
+						}
+						img{
+							display: block;
+							width: 100%;
+						}
+						&:hover{
+							background-color: #F3F3F3;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.created_form_item{
+	label{
+		display: block;
+		font-size: 1.4rem;
+		margin-bottom: 10px;
+	}
+	input,
+	textarea{
+		display: block;
+		width: 200px;
+		padding: 5px;
+		outline: none;
+		font-size: 0.9rem;
+		margin-bottom: 20px;
+		border: 1px solid #626262;
+	}
+	textarea{
+		width: 200px;
+	}
+	input[type="submit"]{
+		display: block;
+		padding: 10px;
+		outline: none;
+		width: 200px;
+		font-size: 1rem;
+		border: 0;
+		background-color: #fff;
+		border: 1px solid #626262;
+		cursor: pointer;
+	}
+}
