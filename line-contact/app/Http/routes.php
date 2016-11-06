@@ -22,3 +22,7 @@ Route::post('/form/delete','FormsController@delete');
 Route::get('/redirect', 'LineOauthController@redirect');
 Route::get('/line-oauth/callback', 'LineOauthController@callback');
 Route::post('/line-message/callback', 'LineMessagingController@messageCallback');
+Route::post('/push', 'LineMessagingController@pushFormMessage');
+Route::get('/contact', function () {
+    return view('contact');
+});
