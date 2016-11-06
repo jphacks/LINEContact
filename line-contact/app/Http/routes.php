@@ -19,3 +19,5 @@ Route::get('/form','FormsController@index');
 Route::post('/form/store','FormsController@store');
 Route::post('/form/update','FormsController@update');
 Route::post('/form/delete','FormsController@delete');
+Route::get('/redirect', 'LineOauthController@redirect');
+Route::get('/line-oauth/callback', 'LineOauthController@callback');
