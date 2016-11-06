@@ -4,6 +4,7 @@ import AppActions from "../actions/AppActions.js"
 
 import Projects from "./top/Projects.jsx"
 import EditView from "./main/EditView.jsx"
+import $ from "jquery"
 
 var getProjectData = () => {
 	return {
@@ -37,12 +38,12 @@ export default class App extends React.Component{
 		switch(this.state.current_page){
 
 			case "index":
-				// window.history.pushState(null,null,"/")
+				window.history.pushState(null,null,"/")
 				dom = <Projects allProjects={this.state.allProjects} />
 				break;
 
 			case "edit":
-				// window.history.pushState(null,null,"/edit")
+				window.history.pushState(null,null,"/edit")
 				dom = <EditView current_form_title={this.state.current_form_title} allFormData={this.state.allFormData} />
 				break;
 
@@ -87,6 +88,32 @@ export default class App extends React.Component{
 
 			    </div>
 			  </main>
+			  
+				<div className="copy_form_html">
+					<div className="code">
+					<p>以下をコピーしてください</p>
+						<pre>
+							<code>
+								{'<form data-line-contact="asdigojso">\n'}
+									{'\t<div class="created_form_item">\n'}
+	  								{'\t\t<label for="line_connect_3">name</label>\n'}
+	  								{'\t\t<input type="text" id="line_connect_3"/>\n'}
+	  							{'\t</div>\n'}
+									{'\t<div class="created_form_item">\n'}
+		  								{'\t\t<label for="line_connect_3">email</label>\n'}
+		  								{'\t\t<input type="text" id="line_connect_3"/>\n'}
+		  						{'\t</div>\n'}
+		  						{'\t<div class="created_form_item">\n'}
+		  							{'\t\t<label for="line_connect_1">message</label>\n'}
+		  							{'\t\t<textarea rows="4" cols="40" name="line_connect_1" id="line_connect_1"></textarea>\n'}
+		  						{'\t</div>\n'}
+								{'</form>'}
+								<div className="close" onClick={this._closeCopy}>&times;</div>
+							</code>
+						</pre>
+					</div>
+				</div>
+
 			</div>
 		)
 	}
@@ -97,6 +124,11 @@ export default class App extends React.Component{
 	}
 
 	_save = () => {
+		$(".copy_form_html").fadeIn()
+	}
+
+	_closeCopy = () => {
+		$(".copy_form_html").fadeOut()
 		AppActions.save(this.state.current_form_id)
 	}
 
