@@ -10,8 +10,8 @@ Webサイト運営者がお問い合わせのフォームをサクッと作れ�
 
 サイト運営者は、LINE CONTACTを使いGUIでフォームを生成し、作ったフォームのコードを自分のサイトに貼り付けるだけで、LINEヘお問い合わせの内容が送られてくる。
 
-![./images/home.png](スクショ)
-![./images/edit.png](スクショ)
+![スクショ](https://github.com/jphacks/LINEContact/blob/master/images/home.png)
+![スクショ](https://github.com/jphacks/LINEContact/blob/master/images/edit.png)
 
 ### 特長
 ####1. お手軽！
