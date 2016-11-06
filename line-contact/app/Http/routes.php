@@ -12,7 +12,8 @@
 */
 
 Route::get('/', function () {
-    return view('index');
+	setcookie("ACCESS_TOKEN","hoge");
+	return view('index');
 });
 Route::get('/user','UsersController@index');
 Route::get('/form','FormsController@index');

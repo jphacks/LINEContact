@@ -2,8 +2,13 @@ import AppDispatcher from "../dispathcer/AppDispatcher.js"
 import { EventEmitter } from "events"
 import AppConstants from "../constants/AppConstants.js"
 import assign from "object-assign"
+import request from "superagent"
 
 const CHANGE_EVENT = 'change'
+
+var getCookie = (sKey) => {
+	return unescape(document.cookie.replace(new RegExp("(?:^|.*;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1"));
+}
 
 var _data = {}
 var _form_data = []
@@ -12,14 +17,11 @@ var _current_page = "index"
 var _current_form_title = ""
 var _current_id = ""
 
+var _at = getCookie("ACCESS_TOKEN")
+
 // home change menu
 var change_menu = (now) => {
 	console.log(`now menu is ${now}`)
-}
-
-// project sheet confirmation
-var sheet_confirmation = (id) => {
-	console.log(`sheet confirmation id: ${id}`)
 }
 
 // project create
@@ -99,7 +101,6 @@ var AppStore = assign({},EventEmitter.prototype, {
 	},
 
 	getAllFormData(){
-		console.log(_form_data)
 		return _form_data
 	},
 
@@ -127,11 +128,6 @@ AppDispatcher.register((action)=>{
 
 		case AppConstants.CHANGE_MENU:
 			change_menu(action.now)
-			AppStore.emitChange()
-			break;
-
-		case AppConstants.SHEET_CONFIRMATION:
-			sheet_confirmation(action.id)
 			AppStore.emitChange()
 			break;
 

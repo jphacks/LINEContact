@@ -52,7 +52,6 @@ export default class Projects extends React.Component{
 				  </div>
 				  <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label inputArea">
 				    <input className="mdl-textfield__input" type="text" id="inputTitle"/>
-				    <label className="mdl-textfield__label" htmlFor="inputTitle">Title...</label>
 				  </div>
 				  <button className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onClick={this._create}>
 				  	決定
