@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTabele extends Migration
+class XauthTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,14 +12,11 @@ class CreateUsersTabele extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('xauths', function (Blueprint $table) {
             $table->timestamps();
-            $table->string('e_mail');
+            $table->increments('id');
+            $table->string('num');
             $table->string('access_token');
-            $table->string('user_id');
-            $table->boolean('friend_flag');
-
         });
     }
 
@@ -30,6 +27,6 @@ class CreateUsersTabele extends Migration
      */
     public function down()
     {
-        Schema::drop('users');
+        Schema::drop('xauths');
     }
 }
